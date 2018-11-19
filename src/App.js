@@ -1,25 +1,46 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Title from "./components/Title";
+import AttendanceDetail from "./components/AttendanceDetail";
+
+const services = [
+  {
+    name: 'cleaning',
+    price: 60
+  },
+  {
+    name: 'cooking',
+    price: 20
+  }
+]
+
+localStorage.setItem('services', JSON.stringify(services));
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      services: []
+    };
+  }
+
+  componentWillMount() {
+    const services = JSON.parse(localStorage.getItem('services'));
+    this.setState({ services });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <Title/>
+        <hr/>
+        {this.state.services.map(services => {
+          return (
+            <AttendanceDetail
+              key={services.name}
+              {...services}
+            />)
+        })}
       </div>
     );
   }

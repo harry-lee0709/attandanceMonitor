@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import ReactBsTable from 'react-bootstrap-table';
+import BootstrapTable from ReactBsTable.BootstrapTable;
+import TableHeaderColumn from ReactBsTable.TableHeaderColumn;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
