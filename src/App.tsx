@@ -106,21 +106,19 @@ class App extends Component<{}, IState> {
     const timeArrived = Date().toString()
     const note = noteInput.value
 		const url = "https://msaphase22018attendanceapi.azurewebsites.net/api/Attendance"
-    
-		let formData = new FormData()
-		formData.append("id", id)
-		formData.append("company", company)
-		formData.append("department", department)
-		formData.append("firstName", firstName)
-		formData.append("lastName", lastName)
-		formData.append("phone", phone)
-		formData.append("timeArrived", timeArrived)
-		formData.append("note", note)
 
-    console.log(timeArrived)
 		fetch(url, {
-			body: formData,
-			headers: {'cache-control': 'no-cache'},
+			body: JSON.stringify({
+        id,
+        company,
+        department,
+        firstName,
+        lastName,
+        phone,
+        timeArrived,
+        note
+      }),
+			headers: {'Content-Type': 'application/json'},
 			method: 'POST'
 		})
       .then((response : any) => {
