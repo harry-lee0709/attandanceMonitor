@@ -2,48 +2,45 @@ import React, { Component } from 'react';
 import Title from "./components/Title";
 import AttendanceDetail from "./components/AttendanceDetail";
 
-const services = [
-  {
-    name: 'cleaning',
-    price: 60
-  },
-  {
-    name: 'cooking',
-    price: 20
-  }
-]
-
-localStorage.setItem('services', JSON.stringify(services));
-
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      services: []
-    };
-  }
-
-  componentWillMount() {
-    const services = JSON.parse(localStorage.getItem('services'));
-    this.setState({ services });
+			currentAttendance: {"id":0, "company":"","department":"","firstName":"","lastName":"","phone":"0","timeArrived":"","note":""},
+			attendanceList: [],
+      open: false,
+      random: "hello"
+		}     
+		
+		this.fetchAttendance("")
+		//this.selectNewAttendance = this.selectNewAttendance.bind(this)
+		this.fetchAttendance = this.fetchAttendance.bind(this)
+		//this.uploadAttendance = this.uploadAttendance.bind(this)
   }
 
   render() {
     return (
       <div>
         <Title/>
-        <hr/>
-        {this.state.services.map(services => {
-          return (
-            <AttendanceDetail
-              key={services.name}
-              {...services}
-            />)
-        })}
+        <AttendanceDetail attendanceList={this.state.attendanceList}/>
       </div>
     );
   }
+
+  fetchAttendance(id) {
+		let url = "https://msaphase22018attendanceapi.azurewebsites.net/api/Attendance/"
+		if (id !== "") {
+			url += "/id?=" + id
+		}
+    fetch(url, {method: 'GET'})
+    .then(res => res.json())
+    .then(json => {
+      this.setState({
+      attendanceList: json
+      })
+    });
+	}
 }
 
 export default App;
