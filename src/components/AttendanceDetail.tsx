@@ -31,6 +31,7 @@ class ServiceDetail extends Component<IProps, {}> {
                     <td>{attendanceDetail.phone}</td>
                     <td>{attendanceDetail.timeArrived}</td>
                     <td>{attendanceDetail.note}</td>
+                    <button className="btn btn-primary btn-warning btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
                   </tr>
                   )
                 }
@@ -39,6 +40,21 @@ class ServiceDetail extends Component<IProps, {}> {
           </table>
         </div>
       );
+    }
+    // DELETE Attendance
+  private deleteAttendance(id: any) {
+    const url = "https://msaphase22018attendanceapi.azurewebsites.net/api/Attendance/" + id
+
+  fetch(url, {method: 'DELETE'})
+    .then((response : any) => {
+      if (!response.ok) {
+        // Error Response
+        alert(response.statusText)
+      }
+      else {
+            location.reload()
+      }
+    })
   }
 }
 
