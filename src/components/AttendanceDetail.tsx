@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-class ServiceDetail extends Component {
+interface IProps {
+  attendanceList: any[]
+}
+
+class ServiceDetail extends Component<IProps, {}> {
   render() { 
       const attendanceList = this.props.attendanceList;
       return ( 
@@ -28,8 +32,10 @@ class ServiceDetail extends Component {
                     <td>{attendanceDetail.timeArrived}</td>
                     <td>{attendanceDetail.note}</td>
                   </tr>
+                  )
+                }
               )
-            })}
+            }
           </table>
         </div>
       );

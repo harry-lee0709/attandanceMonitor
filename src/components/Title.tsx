@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
 class Title extends Component {
-    constructor(props) {
+    constructor(props: any) {
         super(props);
-        this.state = {  }
     }
     render() { 
         return ( 
