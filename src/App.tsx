@@ -11,7 +11,7 @@ interface IState {
   authenticationOpen: boolean,
   authenticated: boolean,
   refCamera: any,
-  predictionResult: any
+  predictionResult: any,
 }
 
 class App extends Component<{}, IState> {
@@ -24,7 +24,7 @@ class App extends Component<{}, IState> {
       attendanceList: [],
       authenticated: false,
       refCamera: React.createRef(),
-      predictionResult: ""
+      predictionResult: "",
     }
 
 		this.fetchAttendance("")
@@ -88,14 +88,13 @@ class App extends Component<{}, IState> {
             <button type="button" className="btn" onClick={this.uploadAttendance}>Submit</button>
           </form>
 			  </Modal>
-        <Modal open={authenticationOpen} onClose={this.onAuthenticationCloseModal} closeOnOverlayClick={false} showCloseIcon={false} center={true}>
+        <Modal open={authenticationOpen} onClose={this.onAuthenticationCloseModal} center={true}>
           <Webcam
             audio={false}
             screenshotFormat="image/jpeg"
             ref={this.state.refCamera}
           />
           <div className="row nav-row">
-            <div className="btn btn-primary bottom-button" onClick={this.onAuthenticationCloseModal}>Cancel</div>
             <div className="btn btn-primary bottom-button" onClick={this.authenticate}>Login</div>
           </div>
         </Modal>
