@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
 import Title from "./components/Title";
 import AttendanceDetail from "./components/AttendanceDetail";
+import Webcam from "react-webcam";
 import './App.css'
 
 interface IState {
 	attendanceList: any[],
   open: boolean,
+  authenticationOpen: boolean,
+  authenticated: boolean,
+  refCamera: any
 }
 
 class App extends Component<{}, IState> {
@@ -15,15 +19,20 @@ class App extends Component<{}, IState> {
     super(props);
     this.state = {
       open: false,
+      authenticationOpen: false,
       attendanceList: [],
+      authenticated: false,
+      refCamera: React.createRef()
     }
 
 		this.fetchAttendance("")
-		this.fetchAttendance = this.fetchAttendance.bind(this)
+    this.fetchAttendance = this.fetchAttendance.bind(this)
+    this.authenticate = this.authenticate.bind(this)
   }
 
   render() {
     const { open } = this.state;
+    const { authenticationOpen } = this.state;
     return (
       <div className="container">
         <div className="table-wrapper">
@@ -34,6 +43,7 @@ class App extends Component<{}, IState> {
               </div>
               <div className="col-sm-2">
                 <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}>Add Attendance</div>
+                <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}>Authenticate</div>
               </div>
             </div>
           </div>
@@ -76,8 +86,24 @@ class App extends Component<{}, IState> {
             <button type="button" className="btn" onClick={this.uploadAttendance}>Submit</button>
           </form>
 			  </Modal>
+        <Modal open={authenticationOpen} onClose={this.authenticate} closeOnOverlayClick={false} showCloseIcon={false} center={true}>
+          <Webcam
+            audio={false}
+            screenshotFormat="image/jpeg"
+            ref={this.state.refCamera}
+          />
+          <div className="row nav-row">
+            <div className="btn btn-primary bottom-button" onClick={this.onAuthenticationCloseModal}>Cancel</div>
+            <div className="btn btn-primary bottom-button" onClick={this.authenticate}>Login</div>
+          </div>
+        </Modal>
       </div>
     );
+  }
+
+  // Authenticate
+  private authenticate() { 
+    const screenshot = this.state.refCamera.current.getScreenshot();
   }
 
   private fetchAttendance(id: any) {
@@ -139,6 +165,14 @@ class App extends Component<{}, IState> {
 				  location.reload()
         }
     })
+  }
+
+  private onAuthenticationModal = () => {
+    this.setState({ authenticationOpen: true});
+  }
+
+  private onAuthenticationCloseModal = () => {
+    this.setState({ authenticationOpen: false});
   }
 
     // Modal open
