@@ -3,6 +3,7 @@ import Modal from 'react-responsive-modal';
 import Title from "./components/Title";
 import AttendanceDetail from "./components/AttendanceDetail";
 import Webcam from "react-webcam";
+import exportFromJSON from 'export-from-json'
 import './App.css'
 
 interface IState {
@@ -30,6 +31,7 @@ class App extends Component<{}, IState> {
 		this.fetchAttendance("")
     this.fetchAttendance = this.fetchAttendance.bind(this)
     this.authenticate = this.authenticate.bind(this)
+    this.exportToExcel = this.exportToExcel.bind(this)
   }
 
   render() {
@@ -40,12 +42,13 @@ class App extends Component<{}, IState> {
         <div className="table-wrapper">
           <div className="table-title">
             <div className="row">
-              <div className="col-sm-10">
+              <div className="col-sm-7">
                 <Title/>
               </div>
-              <div className="col-sm-2">
-                <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}>Add Attendance</div>
-                <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}>Authenticate</div>
+              <div className="col-sm-5">
+                <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}><span>Add Attendance</span></div>
+                <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}><span>Authenticate</span></div>
+                <div className="btn btn-primary" onClick={this.exportToExcel}><span>Export to Excel</span></div>						
               </div>
             </div>
           </div>
@@ -102,7 +105,7 @@ class App extends Component<{}, IState> {
     );
   }
 
-  // Authenticate
+    // Authenticate
   private authenticate() { 
     const screenshot = this.state.refCamera.current.getScreenshot();
     this.getFaceRecognitionResult(screenshot);
@@ -141,6 +144,14 @@ class App extends Component<{}, IState> {
           })
         }
       })
+  }
+    //exports table data as csv file
+  private exportToExcel() {
+    const data = this.state.attendanceList
+    var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+    const fileName = "attendanceMonitor" + date;
+    const exportType = 'csv'
+    exportFromJSON({ data, fileName, exportType })
   }
 
   private fetchAttendance(id: any) {
