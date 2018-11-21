@@ -88,7 +88,7 @@ class App extends Component<{}, IState> {
             <button type="button" className="btn" onClick={this.uploadAttendance}>Submit</button>
           </form>
 			  </Modal>
-        <Modal open={authenticationOpen} onClose={this.authenticate} closeOnOverlayClick={false} showCloseIcon={false} center={true}>
+        <Modal open={authenticationOpen} onClose={this.onAuthenticationCloseModal} closeOnOverlayClick={false} showCloseIcon={false} center={true}>
           <Webcam
             audio={false}
             screenshotFormat="image/jpeg"
