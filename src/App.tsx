@@ -112,7 +112,7 @@ class App extends Component<{}, IState> {
 
     // Call custom vision model
   private getFaceRecognitionResult(image: string) {
-    const url = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/3f844f94-31c7-418d-8923-0b8845581c80/url?iterationId=8f70f8e3-e02e-4f0d-80fe-120820ee755f"
+    const url = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/3f844f94-31c7-418d-8923-0b8845581c80/image?iterationId=8f70f8e3-e02e-4f0d-80fe-120820ee755f"
     if (image === null) {
       return;
     }
