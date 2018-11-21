@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
 
 interface IProps {
-  attendanceList: any[]
+  attendanceList: any[],
+  authenticated: boolean
 }
 
 interface IState {
@@ -20,6 +21,7 @@ class ServiceDetail extends Component<IProps, IState, {}> {
 
   render() { 
       const attendanceList = this.props.attendanceList;
+      const authenticated = this.props.authenticated;
       const { open } = this.state;
       return ( 
         <div>
@@ -48,8 +50,12 @@ class ServiceDetail extends Component<IProps, IState, {}> {
                       <td className="attendanceData" id="phone-field">{attendanceDetail.phone}</td>
                       <td className="attendanceData" id="timeArrived-field">{attendanceDetail.timeArrived}</td>
                       <td className="attendanceData" id="note-field">{attendanceDetail.note}</td>
-                      <button className="btn btn-primary btn-warning btn-edit" onClick={this.onOpenModal}>Edit</button>
-                      <button className="btn btn-primary btn-danger btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
+                      {(authenticated) ?
+                        <div>
+                        <button className="btn btn-primary btn-warning btn-edit" onClick={this.onOpenModal}>Edit</button>
+                        <button className="btn btn-primary btn-danger btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
+                        </div>
+                       : ""}
                     </tr>
                   </tbody>
                 )

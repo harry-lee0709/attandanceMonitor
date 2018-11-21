@@ -10,7 +10,8 @@ interface IState {
   open: boolean,
   authenticationOpen: boolean,
   authenticated: boolean,
-  refCamera: any
+  refCamera: any,
+  predictionResult: any
 }
 
 class App extends Component<{}, IState> {
@@ -22,7 +23,8 @@ class App extends Component<{}, IState> {
       authenticationOpen: false,
       attendanceList: [],
       authenticated: false,
-      refCamera: React.createRef()
+      refCamera: React.createRef(),
+      predictionResult: ""
     }
 
 		this.fetchAttendance("")
@@ -47,7 +49,7 @@ class App extends Component<{}, IState> {
               </div>
             </div>
           </div>
-          <AttendanceDetail attendanceList={this.state.attendanceList}/>
+          <AttendanceDetail attendanceList={this.state.attendanceList} authenticated={this.state.authenticated}/>
         </div>
         <Modal open={open} onClose={this.onCloseModal}>
           <form>
@@ -104,6 +106,42 @@ class App extends Component<{}, IState> {
   // Authenticate
   private authenticate() { 
     const screenshot = this.state.refCamera.current.getScreenshot();
+    this.getFaceRecognitionResult(screenshot);
+    this.onAuthenticationCloseModal;
+  }
+
+    // Call custom vision model
+  private getFaceRecognitionResult(image: string) {
+    const url = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/3f844f94-31c7-418d-8923-0b8845581c80/url?iterationId=8f70f8e3-e02e-4f0d-80fe-120820ee755f"
+    if (image === null) {
+      return;
+    }
+    const base64 = require('base64-js');
+    const base64content = image.split(";")[1].split(",")[1]
+    const byteArray = base64.toByteArray(base64content);
+    fetch(url, {
+      body: byteArray,
+      headers: {
+        'cache-control': 'no-cache', 'Prediction-Key': '0307db03b617462b86719d04e1e9439d', 'Content-Type': 'application/octet-stream'
+      },
+      method: 'POST'
+    })
+      .then((response: any) => {
+        if (!response.ok) {
+          // Error State
+          alert(response.statusText)
+        } else {
+          response.json().then((json: any) => {
+            console.log(json.predictions[0])
+            this.setState({predictionResult: json.predictions[0] })
+            if (this.state.predictionResult.probability > 0.7) {
+              this.setState({authenticated: true})
+            } else {
+              this.setState({authenticated: false})
+            }
+          })
+        }
+      })
   }
 
   private fetchAttendance(id: any) {
