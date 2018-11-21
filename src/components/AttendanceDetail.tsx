@@ -1,46 +1,159 @@
 import React, { Component } from 'react';
+import Modal from 'react-responsive-modal';
 
 interface IProps {
   attendanceList: any[]
 }
 
-class ServiceDetail extends Component<IProps, {}> {
+interface IState {
+  open: boolean
+}
+
+class ServiceDetail extends Component<IProps, IState, {}> {
+
+  constructor(props: any) {
+    super(props)   
+    this.state = {
+        open: false
+    }
+  }
+
   render() { 
       const attendanceList = this.props.attendanceList;
+      const { open } = this.state;
       return ( 
         <div>
           <table>
-            <tr className="tableHeading">
-              <th>ID</th>
-              <th>Company</th> 
-              <th>Department</th>
-              <th>Last Name</th>
-              <th>First Name</th>
-              <th>Phone</th>
-              <th>Time Arrived</th>
-              <th>Note</th>
-            </tr>
-            {attendanceList.map((attendanceDetail, key)=>{
+            <thead>
+              <tr className="tableHeading">
+                <th>ID</th>
+                <th>Company</th> 
+                <th>Department</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Phone</th>
+                <th>Time Arrived</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            {attendanceList.map((attendanceDetail)=>{
               return (
-                  <tr>
-                    <td>{attendanceDetail.id}</td>
-                    <td>{attendanceDetail.company}</td> 
-                    <td>{attendanceDetail.department}</td>
-                    <td>{attendanceDetail.lastName}</td>
-                    <td>{attendanceDetail.firstName}</td>
-                    <td>{attendanceDetail.phone}</td>
-                    <td>{attendanceDetail.timeArrived}</td>
-                    <td>{attendanceDetail.note}</td>
-                    <button className="btn btn-primary btn-warning btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
-                  </tr>
-                  )
-                }
-              )
+                  <tbody>
+                    <tr>
+                      <td className="attendanceData" id="id-field">{attendanceDetail.id}</td>
+                      <td className="attendanceData" id="company-field">{attendanceDetail.company}</td> 
+                      <td className="attendanceData" id="department-field">{attendanceDetail.department}</td>
+                      <td className="attendanceData" id="lastName-field">{attendanceDetail.lastName}</td>
+                      <td className="attendanceData" id="firstName-field">{attendanceDetail.firstName}</td>
+                      <td className="attendanceData" id="phone-field">{attendanceDetail.phone}</td>
+                      <td className="attendanceData" id="timeArrived-field">{attendanceDetail.timeArrived}</td>
+                      <td className="attendanceData" id="note-field">{attendanceDetail.note}</td>
+                      <button className="btn btn-primary btn-warning btn-edit" onClick={this.onOpenModal}>Edit</button>
+                      <button className="btn btn-primary btn-danger btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
+                    </tr>
+                  </tbody>
+                )
+              }
+            ) 
             }
           </table>
+          <div>
+            <Modal open={open} onClose={this.onCloseModal}>
+              <form>
+                <div className="form-group">
+                  <label>ID</label>
+                  <input type="text" className="form-control" id="id-input" placeholder="Enter ID" />
+                  <small className="form-text text-muted">*required*</small>
+                </div>
+                <div className="form-group">
+                  <label>Company</label>
+                  <input type="text" className="form-control" id="company-input" placeholder="Enter Company" />
+                  <small className="form-text text-muted">*required*</small>
+                </div>
+                <div className="form-group">
+                  <label>Department</label>
+                  <input type="text" className="form-control" id="department-input" placeholder="Enter Department" />
+                </div>
+                <div className="form-group">
+                  <label>First Name</label>
+                  <input type="text" className="form-control" id="firstname-input" placeholder="Enter First Name" />
+                </div>
+                <div className="form-group">
+                  <label>Last Name</label>
+                  <input type="text" className="form-control" id="lastname-input" placeholder="Enter Last Name" />
+                </div>
+                <div className="form-group">
+                  <label>Phone</label>
+                  <input type="text" className="form-control" id="phone-input" placeholder="Enter Phone" />
+                </div>
+                <div className="form-group">
+                  <label>Note</label>
+                  <input type="text" className="form-control" id="note-input" placeholder="Enter Note" />
+                  <small className="form-text text-muted">Please enter any additional info.</small>
+                </div>
+                <button type="button" className="btn" onClick={this.editAttendance}>Save</button>
+              </form>
+            </Modal>
+          </div>
         </div>
       );
     }
+
+    private onOpenModal = () => {
+      this.setState({ open: true });
+	  };
+    
+    // Modal Close
+    private onCloseModal = () => {
+		  this.setState({ open: false });
+	  };
+
+    // PUT Attendance
+    private editAttendance(id: any){
+      const idInput = document.getElementById("id-field") as HTMLInputElement
+      const companyInput = document.getElementById("company-field") as HTMLInputElement
+      const departmentInput = document.getElementById("department-field") as HTMLInputElement
+      const lastNameInput = document.getElementById("lastName-field") as HTMLInputElement
+      const firstNameInput = document.getElementById("firstName-field") as HTMLInputElement
+      const phoneInput = document.getElementById("phone-field") as HTMLInputElement
+      const noteInput = document.getElementById("note-field") as HTMLInputElement
+
+      if (idInput === null || companyInput === null) {
+        return;
+      }
+      const url = "http://phase2apitest.azurewebsites.net/api/Attendance/" + id
+      const updatedId = idInput.value
+      const updatedCompany = companyInput.value
+      const updatedDepartment = departmentInput.value
+      const updatedLastName = lastNameInput.value
+      const updatedFirstName = firstNameInput.value
+      const updatedPhone = phoneInput.value
+      const updatedTimeArrived = Date().toString()
+      const updatedNote = noteInput.value
+  fetch(url, {
+    body: JSON.stringify({
+              "id": updatedId,
+              "company": updatedCompany,
+              "department": updatedDepartment,
+              "lastName": updatedLastName,
+              "firstName": updatedFirstName,
+              "phone": updatedPhone,
+              "timeArrived": updatedTimeArrived,
+              "note": updatedNote
+          }),
+    headers: {'cache-control': 'no-cache','Content-Type': 'application/json'},
+    method: 'PUT'
+  })
+      .then((response : any) => {
+    if (!response.ok) {
+      // Error State
+      alert(response.statusText + " " + url)
+    } else {
+      location.reload()
+    }
+    })
+  }
+
     // DELETE Attendance
   private deleteAttendance(id: any) {
     const url = "https://msaphase22018attendanceapi.azurewebsites.net/api/Attendance/" + id

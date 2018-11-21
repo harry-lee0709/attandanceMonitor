@@ -5,7 +5,7 @@ import AttendanceDetail from "./components/AttendanceDetail";
 
 interface IState {
 	attendanceList: any[],
-	open: boolean,
+  open: boolean,
 }
 
 class App extends Component<{}, IState> {
@@ -14,12 +14,11 @@ class App extends Component<{}, IState> {
     super(props);
     this.state = {
       open: false,
-			attendanceList: []
-		}
-		
+      attendanceList: [],
+    }
+
 		this.fetchAttendance("")
 		this.fetchAttendance = this.fetchAttendance.bind(this)
-		//this.uploadAttendance = this.uploadAttendance.bind(this)
   }
 
   render() {
