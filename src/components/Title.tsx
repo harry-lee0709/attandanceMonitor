@@ -6,7 +6,7 @@ class Title extends Component {
     }
     render() { 
         return ( 
-            <h1>Service Price Comparison - MSA 2018</h1>
+            <h2>Attendance Monitor - MSA 2018</h2>
          );
     }
 }

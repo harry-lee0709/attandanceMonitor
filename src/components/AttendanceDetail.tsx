@@ -23,7 +23,7 @@ class ServiceDetail extends Component<IProps, IState, {}> {
       const { open } = this.state;
       return ( 
         <div>
-          <table>
+          <table className="table table-striped table-hover">
             <thead>
               <tr className="tableHeading">
                 <th>ID</th>

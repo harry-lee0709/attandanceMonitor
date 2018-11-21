@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
 import Title from "./components/Title";
 import AttendanceDetail from "./components/AttendanceDetail";
+import './App.css'
 
 interface IState {
 	attendanceList: any[],
@@ -24,10 +25,20 @@ class App extends Component<{}, IState> {
   render() {
     const { open } = this.state;
     return (
-      <div>
-        <Title/>
-        <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}>Add Attendance</div>
-        <AttendanceDetail attendanceList={this.state.attendanceList}/>
+      <div className="container">
+        <div className="table-wrapper">
+          <div className="table-title">
+            <div className="row">
+              <div className="col-sm-10">
+                <Title/>
+              </div>
+              <div className="col-sm-2">
+                <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}>Add Attendance</div>
+              </div>
+            </div>
+          </div>
+          <AttendanceDetail attendanceList={this.state.attendanceList}/>
+        </div>
         <Modal open={open} onClose={this.onCloseModal}>
           <form>
             <div className="form-group">
