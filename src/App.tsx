@@ -14,9 +14,10 @@ interface IState {
   refCamera: any,
   predictionResult: any,
   latitude: any,
-  longitude: any,  
+  longitude: any,
   savedLatitude: any,
   savedLongitude: any,
+	isShowingAddAttendance: boolean,
 }
 
 class App extends Component<{}, IState> {
@@ -34,6 +35,7 @@ class App extends Component<{}, IState> {
       longitude: "",
       savedLatitude: "",
       savedLongitude: "",
+			isShowingAddAttendance: false,
     }
 
 		this.fetchAttendance("")
@@ -46,21 +48,22 @@ class App extends Component<{}, IState> {
 
   render() {
     const { open } = this.state;
-    const { authenticationOpen } = this.state;
+    const { authenticationOpen, isShowingAddAttendance } = this.state;
     return (
       <div className="container">
         <div className="table-wrapper">
           <div className="table-title">
             <div className="row">
               <div className="col-sm-7">
-                <img id="logo" src={Logo} height="80"/><h2>Attendance Monitor - MSA 2018</h2>
+                <img id="logo" src={Logo} height="80"/><h2>Attendance Monitor - <b>MSA 2018</b></h2>
               </div>
               <div className="col-sm-5">
-                <div className="btn btn-primary btn-action btn-add" id="addAttendanceButton" onClick={this.onOpenModal}><span>Add Attendance</span></div>
+								{isShowingAddAttendance &&
+                <div className="btn btn-primary btn-action btn-add" id="addAttendanceButton" onClick={this.onOpenModal}><span>Add Attendance</span></div> }
                 <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}><span>Authenticate</span></div>
                 <div className="btn btn-primary" onClick={this.exportToExcel}><span>Export to Excel</span></div>
-                <div className="btn btn-primary bottom-button" onClick={this.setCurrentLocation}>setCurrentLocation</div>				
-                <div className="btn btn-primary bottom-button" onClick={this.getCurrentLocation}>getCurrentLocation</div>				
+                <div className="btn btn-primary bottom-button" onClick={this.setCurrentLocation}>setCurrentLocation</div>
+                <div className="btn btn-primary bottom-button" onClick={this.getCurrentLocation}>getCurrentLocation</div>
               </div>
             </div>
           </div>
@@ -118,7 +121,7 @@ class App extends Component<{}, IState> {
   }
 
     // Authenticate
-  private authenticate() { 
+  private authenticate() {
     const screenshot = this.state.refCamera.current.getScreenshot();
     this.getFaceRecognitionResult(screenshot);
     this.onAuthenticationCloseModal;
@@ -179,7 +182,7 @@ class App extends Component<{}, IState> {
     if (this.state.savedLatitude+1 >= this.state.latitude && this.state.latitude <= this.state.savedLatitude-1 &&
       this.state.savedLongitude+1 >= this.state.longitude && this.state.longitude <= this.state.savedLongitude-1) {
         //set button with id="addAttendanceButton" visible which is hidden by default.
-        
+				this.setState({isShowingAddAttendance: true});
       }
     console.log(`saved lat ${this.state.savedLatitude}, saved long ${this.state.savedLongitude}, current lat ${this.state.latitude}, current long ${this.state.longitude}`)
   }
@@ -216,7 +219,7 @@ class App extends Component<{}, IState> {
 		const lastnameInput = document.getElementById("lastname-input") as HTMLInputElement
 		const phoneInput = document.getElementById("phone-input") as HTMLInputElement
 		const noteInput = document.getElementById("note-input") as HTMLInputElement
-    
+
 		if (idInput === null || companyInput === null) {
 			return;
 		}

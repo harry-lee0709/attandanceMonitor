@@ -82,11 +82,11 @@ class ServiceDetail extends Component<IProps, IState, {}> {
                 </div>
                 <div className="form-group">
                   <label>First Name</label>
-                  <input type="text" className="form-control" id="firstname-input" placeholder="Enter First Name" />
+                  <input type="text" className="form-control" id="firstName-input" placeholder="Enter First Name" />
                 </div>
                 <div className="form-group">
                   <label>Last Name</label>
-                  <input type="text" className="form-control" id="lastname-input" placeholder="Enter Last Name" />
+                  <input type="text" className="form-control" id="lastName-input" placeholder="Enter Last Name" />
                 </div>
                 <div className="form-group">
                   <label>Phone</label>
@@ -115,19 +115,18 @@ class ServiceDetail extends Component<IProps, IState, {}> {
 	  };
 
     // PUT Attendance
-    private editAttendance(id: any){
-      const idInput = document.getElementById("id-field") as HTMLInputElement
-      const companyInput = document.getElementById("company-field") as HTMLInputElement
-      const departmentInput = document.getElementById("department-field") as HTMLInputElement
-      const lastNameInput = document.getElementById("lastName-field") as HTMLInputElement
-      const firstNameInput = document.getElementById("firstName-field") as HTMLInputElement
-      const phoneInput = document.getElementById("phone-field") as HTMLInputElement
-      const noteInput = document.getElementById("note-field") as HTMLInputElement
+    private editAttendance(){
+      const idInput = document.getElementById("id-input") as HTMLInputElement
+      const companyInput = document.getElementById("company-input") as HTMLInputElement
+      const departmentInput = document.getElementById("department-input") as HTMLInputElement
+      const lastNameInput = document.getElementById("lastName-input") as HTMLInputElement
+      const firstNameInput = document.getElementById("firstName-input") as HTMLInputElement
+      const phoneInput = document.getElementById("phone-input") as HTMLInputElement
+      const noteInput = document.getElementById("note-input") as HTMLInputElement
 
       if (idInput === null || companyInput === null) {
         return;
       }
-      const url = "http://phase2apitest.azurewebsites.net/api/Attendance/" + id
       const updatedId = idInput.value
       const updatedCompany = companyInput.value
       const updatedDepartment = departmentInput.value
@@ -136,6 +135,8 @@ class ServiceDetail extends Component<IProps, IState, {}> {
       const updatedPhone = phoneInput.value
       const updatedTimeArrived = Date().toString()
       const updatedNote = noteInput.value
+
+      const url = `https://msaphase22018attendanceapi.azurewebsites.net/api/Attendance/${updatedId}`
   fetch(url, {
     body: JSON.stringify({
               "id": updatedId,
