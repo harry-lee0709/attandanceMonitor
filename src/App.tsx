@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
-import Title from "./components/Title";
 import AttendanceDetail from "./components/AttendanceDetail";
 import Webcam from "react-webcam";
 import exportFromJSON from 'export-from-json'
 import './App.css'
+import Logo from './logo.svg';
 
 interface IState {
 	attendanceList: any[],
@@ -13,6 +13,10 @@ interface IState {
   authenticated: boolean,
   refCamera: any,
   predictionResult: any,
+  latitude: any,
+  longitude: any,  
+  savedLatitude: any,
+  savedLongitude: any,
 }
 
 class App extends Component<{}, IState> {
@@ -26,12 +30,18 @@ class App extends Component<{}, IState> {
       authenticated: false,
       refCamera: React.createRef(),
       predictionResult: "",
+      latitude: "",
+      longitude: "",
+      savedLatitude: "",
+      savedLongitude: "",
     }
 
 		this.fetchAttendance("")
     this.fetchAttendance = this.fetchAttendance.bind(this)
     this.authenticate = this.authenticate.bind(this)
     this.exportToExcel = this.exportToExcel.bind(this)
+    this.getCurrentLocation = this.getCurrentLocation.bind(this)
+    this.setCurrentLocation = this.setCurrentLocation.bind(this)
   }
 
   render() {
@@ -43,12 +53,14 @@ class App extends Component<{}, IState> {
           <div className="table-title">
             <div className="row">
               <div className="col-sm-7">
-                <Title/>
+                <img id="logo" src={Logo} height="80"/><h2>Attendance Monitor - MSA 2018</h2>
               </div>
               <div className="col-sm-5">
-                <div className="btn btn-primary btn-action btn-add" onClick={this.onOpenModal}><span>Add Attendance</span></div>
+                <div className="btn btn-primary btn-action btn-add" id="addAttendanceButton" onClick={this.onOpenModal}><span>Add Attendance</span></div>
                 <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}><span>Authenticate</span></div>
-                <div className="btn btn-primary" onClick={this.exportToExcel}><span>Export to Excel</span></div>						
+                <div className="btn btn-primary" onClick={this.exportToExcel}><span>Export to Excel</span></div>
+                <div className="btn btn-primary bottom-button" onClick={this.setCurrentLocation}>setCurrentLocation</div>				
+                <div className="btn btn-primary bottom-button" onClick={this.getCurrentLocation}>getCurrentLocation</div>				
               </div>
             </div>
           </div>
@@ -145,6 +157,33 @@ class App extends Component<{}, IState> {
         }
       })
   }
+  private async setCurrentLocation() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.setState({
+        savedLatitude: position.coords.latitude,
+        savedLongitude: position.coords.longitude
+      })
+    })
+    if (this.state.savedLatitude != "" && this.state.savedLongitude != "")
+      alert(`Location has set to ${this.state.savedLatitude} ${this.state.savedLongitude}.`)
+    else alert("Unable to set the current location.")
+  }
+
+  private getCurrentLocation() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      })
+    })
+    if (this.state.savedLatitude+1 >= this.state.latitude && this.state.latitude <= this.state.savedLatitude-1 &&
+      this.state.savedLongitude+1 >= this.state.longitude && this.state.longitude <= this.state.savedLongitude-1) {
+        //set button with id="addAttendanceButton" visible which is hidden by default.
+        
+      }
+    console.log(`saved lat ${this.state.savedLatitude}, saved long ${this.state.savedLongitude}, current lat ${this.state.latitude}, current long ${this.state.longitude}`)
+  }
+
     //exports table data as csv file
   private exportToExcel() {
     const data = this.state.attendanceList
@@ -152,6 +191,7 @@ class App extends Component<{}, IState> {
     const fileName = "attendanceMonitor" + date;
     const exportType = 'csv'
     exportFromJSON({ data, fileName, exportType })
+    alert("Table data exported successfully.")
   }
 
   private fetchAttendance(id: any) {
