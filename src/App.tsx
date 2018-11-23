@@ -5,7 +5,7 @@ import Webcam from "react-webcam";
 import exportFromJSON from "export-from-json";
 import "./App.css";
 import Logo from "./logo.svg";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface IState {
@@ -49,30 +49,6 @@ class App extends Component<{}, IState> {
     this.setCurrentLocation = this.setCurrentLocation.bind(this);
   }
 
-  notify = () => {
-    toast("Default Notification !");
-
-    toast.success("Success Notification !", {
-      position: toast.POSITION.TOP_CENTER
-    });
-
-    toast.error("Error Notification !", {
-      position: toast.POSITION.TOP_LEFT
-    });
-
-    toast.warn("Warning Notification !", {
-      position: toast.POSITION.BOTTOM_LEFT
-    });
-
-    toast.info("Info Notification !", {
-      position: toast.POSITION.BOTTOM_CENTER
-    });
-
-    toast("Custom Style Notification with css class!", {
-      position: toast.POSITION.BOTTOM_RIGHT,
-      className: "foo-bar"
-    });
-  };
   render() {
     const { open } = this.state;
     const { authenticationOpen, isShowingAddAttendance } = this.state;
@@ -225,15 +201,13 @@ class App extends Component<{}, IState> {
             </div>
           </div>
         </Modal>
+        <ToastContainer />
       </div>
     );
   }
 
   // Authenticate
   private authenticate() {
-    toast.error("Error Notification !", {
-      position: toast.POSITION.TOP_LEFT
-    });
     const screenshot = this.state.refCamera.current.getScreenshot();
     this.getFaceRecognitionResult(screenshot);
     this.onAuthenticationCloseModal;
@@ -260,17 +234,23 @@ class App extends Component<{}, IState> {
     }).then((response: any) => {
       if (!response.ok) {
         // Error State
-        alert(response.statusText);
+        toast.error(response.statusText, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         response.json().then((json: any) => {
           console.log(json.predictions[0]);
           this.setState({ predictionResult: json.predictions[0] });
           if (this.state.predictionResult.probability > 0.7) {
-            this.setState({ authenticated: true, authenticationOpen: true });
+            this.setState({ authenticated: true, authenticationOpen: false });
+            toast.dismiss();
+            toast.success("Authentication Successful!", {
+              position: toast.POSITION.BOTTOM_LEFT
+            });
           } else {
             this.setState({ authenticated: false });
-            toast.error("Error Notification !", {
-              position: toast.POSITION.TOP_LEFT
+            toast.error("HAHA YOU HAVE WRONG FACE!", {
+              position: toast.POSITION.BOTTOM_RIGHT
             });
           }
         });
@@ -291,10 +271,13 @@ class App extends Component<{}, IState> {
 
     one.then(value => {
       if (value) {
-        alert(
+        toast.success(
           `Location has set to ${this.state.savedLatitude} ${
             this.state.savedLongitude
-          }.`
+          }.`,
+          {
+            position: toast.POSITION.BOTTOM_LEFT
+          }
         );
       }
     });
@@ -345,7 +328,9 @@ class App extends Component<{}, IState> {
     const fileName = "attendanceMonitor" + date;
     const exportType = "csv";
     exportFromJSON({ data, fileName, exportType });
-    alert("Table data exported successfully.");
+    toast.success("Table data exported successfully.", {
+      position: toast.POSITION.BOTTOM_LEFT
+    });
   }
 
   private fetchAttendance(id: any) {
@@ -413,7 +398,9 @@ class App extends Component<{}, IState> {
     }).then((response: any) => {
       if (!response.ok) {
         // Error State
-        alert(response.statusText);
+        toast.error(response.statusText, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         location.reload();
       }
