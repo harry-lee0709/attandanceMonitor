@@ -93,6 +93,9 @@ table.table td a.delete {
 table.table td i {
   font-size: 19px;
 }
+.btn {
+  margin-bottom: 10px;
+}
 
 @media (max-width: 760px) {
   ul {

@@ -87,19 +87,20 @@ class App extends Component<{}, IState> {
                 <span className="glyphicon glyphicon-save-file"/>
                   <span>Export to Excel</span>
                 </div>
+                {(this.state.authenticated) && 
                 <div
                   className="btn btn-primary bottom-button"
                   onClick={this.setCurrentLocation}
                 >
                 <span className="glyphicon glyphicon-map-marker"/>
-                  setCurrentLocation
-                </div>
+                  Set Location
+                </div> }
                 <div
                   className="btn btn-primary bottom-button"
                   onClick={this.getCurrentLocation}
                 >
                 <span className="glyphicon glyphicon-map-marker"/>
-                  getCurrentLocation
+                  Let Me Log It
                 </div>
               </div>
             </div>
