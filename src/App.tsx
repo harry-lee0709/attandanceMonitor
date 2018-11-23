@@ -5,8 +5,8 @@ import Webcam from "react-webcam";
 import exportFromJSON from "export-from-json";
 import "./App.css";
 import Logo from "./logo.svg";
-import { promises } from "fs";
-import { resolve } from "dns";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface IState {
   attendanceList: any[];
@@ -49,6 +49,30 @@ class App extends Component<{}, IState> {
     this.setCurrentLocation = this.setCurrentLocation.bind(this);
   }
 
+  notify = () => {
+    toast("Default Notification !");
+
+    toast.success("Success Notification !", {
+      position: toast.POSITION.TOP_CENTER
+    });
+
+    toast.error("Error Notification !", {
+      position: toast.POSITION.TOP_LEFT
+    });
+
+    toast.warn("Warning Notification !", {
+      position: toast.POSITION.BOTTOM_LEFT
+    });
+
+    toast.info("Info Notification !", {
+      position: toast.POSITION.BOTTOM_CENTER
+    });
+
+    toast("Custom Style Notification with css class!", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      className: "foo-bar"
+    });
+  };
   render() {
     const { open } = this.state;
     const { authenticationOpen, isShowingAddAttendance } = this.state;
@@ -207,6 +231,9 @@ class App extends Component<{}, IState> {
 
   // Authenticate
   private authenticate() {
+    toast.error("Error Notification !", {
+      position: toast.POSITION.TOP_LEFT
+    });
     const screenshot = this.state.refCamera.current.getScreenshot();
     this.getFaceRecognitionResult(screenshot);
     this.onAuthenticationCloseModal;
@@ -239,9 +266,12 @@ class App extends Component<{}, IState> {
           console.log(json.predictions[0]);
           this.setState({ predictionResult: json.predictions[0] });
           if (this.state.predictionResult.probability > 0.7) {
-            this.setState({ authenticated: true });
+            this.setState({ authenticated: true, authenticationOpen: true });
           } else {
             this.setState({ authenticated: false });
+            toast.error("Error Notification !", {
+              position: toast.POSITION.TOP_LEFT
+            });
           }
         });
       }
