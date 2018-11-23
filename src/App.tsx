@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import Modal from "react-responsive-modal";
+import { Glyphicon } from "react-bootstrap";
 import AttendanceDetail from "./components/AttendanceDetail";
 import Webcam from "react-webcam";
 import exportFromJSON from "export-from-json";
 import "./App.css";
 import Logo from "./logo.svg";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.css";
 
 interface IState {
@@ -70,6 +72,7 @@ class App extends Component<{}, IState> {
                     id="addAttendanceButton"
                     onClick={this.onOpenModal}
                   >
+                <span className="glyphicon glyphicon-time"/>
                     <span>Add Attendance</span>
                   </div>
                 )}
@@ -77,21 +80,25 @@ class App extends Component<{}, IState> {
                   className="btn btn-primary btn-action btn-add"
                   onClick={this.onAuthenticationModal}
                 >
+                <span className="glyphicon glyphicon-camera"/>
                   <span>Authenticate</span>
                 </div>
                 <div className="btn btn-primary" onClick={this.exportToExcel}>
+                <span className="glyphicon glyphicon-save-file"/>
                   <span>Export to Excel</span>
                 </div>
                 <div
                   className="btn btn-primary bottom-button"
                   onClick={this.setCurrentLocation}
                 >
+                <span className="glyphicon glyphicon-map-marker"/>
                   setCurrentLocation
                 </div>
                 <div
                   className="btn btn-primary bottom-button"
                   onClick={this.getCurrentLocation}
                 >
+                <span className="glyphicon glyphicon-map-marker"/>
                   getCurrentLocation
                 </div>
               </div>
@@ -271,6 +278,7 @@ class App extends Component<{}, IState> {
 
     one.then(value => {
       if (value) {
+        toast.dismiss()
         toast.success(
           `Location has set to ${this.state.savedLatitude} ${
             this.state.savedLongitude
@@ -279,7 +287,14 @@ class App extends Component<{}, IState> {
             position: toast.POSITION.BOTTOM_LEFT
           }
         );
-      }
+      } 
+      else
+        toast.error(
+        "Unable to set current location.",
+        {
+          position: toast.POSITION.BOTTOM_RIGHT
+        }
+      );
     });
   }
 
@@ -298,16 +313,23 @@ class App extends Component<{}, IState> {
         if (this.arePointsNear()) {
           //set button with id="addAttendanceButton" visible which is hidden by default.
           this.setState({ isShowingAddAttendance: true });
+          toast.dismiss()
+          toast.success(
+            "You are at the right place! I will give you the right to add attendance!",
+            {
+              position: toast.POSITION.BOTTOM_LEFT
+            })
         }
-        console.log(
-          `saved lat ${this.state.savedLatitude}, saved long ${
-            this.state.savedLongitude
-          }, current lat ${this.state.latitude}, current long ${
-            this.state.longitude
-          }`
-        );
+        else
+        toast.error(
+        "You are NOT at the right place! You CAN'T post attendance!",
+        {
+          position: toast.POSITION.BOTTOM_RIGHT
+        }
+      );
       }
     });
+    
   }
 
   private arePointsNear() {
@@ -328,6 +350,7 @@ class App extends Component<{}, IState> {
     const fileName = "attendanceMonitor" + date;
     const exportType = "csv";
     exportFromJSON({ data, fileName, exportType });
+    toast.dismiss()
     toast.success("Table data exported successfully.", {
       position: toast.POSITION.BOTTOM_LEFT
     });
