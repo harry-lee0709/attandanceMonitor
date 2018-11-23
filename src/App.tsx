@@ -271,23 +271,30 @@ class App extends Component<{}, IState> {
   }
 
   private getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(position => {
-      this.setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+    const two = new Promise<boolean>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        resolve(true);
       });
     });
-    if (this.arePointsNear()) {
-      //set button with id="addAttendanceButton" visible which is hidden by default.
-      this.setState({ isShowingAddAttendance: true });
-    }
-    console.log(
-      `saved lat ${this.state.savedLatitude}, saved long ${
-        this.state.savedLongitude
-      }, current lat ${this.state.latitude}, current long ${
-        this.state.longitude
-      }`
-    );
+    two.then(value => {
+      if (value) {
+        if (this.arePointsNear()) {
+          //set button with id="addAttendanceButton" visible which is hidden by default.
+          this.setState({ isShowingAddAttendance: true });
+        }
+        console.log(
+          `saved lat ${this.state.savedLatitude}, saved long ${
+            this.state.savedLongitude
+          }, current lat ${this.state.latitude}, current long ${
+            this.state.longitude
+          }`
+        );
+      }
+    });
   }
 
   private arePointsNear() {
