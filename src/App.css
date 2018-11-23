@@ -93,3 +93,22 @@ table.table td a.delete {
 table.table td i {
   font-size: 19px;
 }
+
+@media (max-width: 760px) {
+  ul {
+    width: 100%;
+  }
+
+  ul li {
+    display: block;
+    text-align: center;
+  }
+
+  td {
+    display: block;
+  }
+
+  th {
+    display: none;
+  }
+}

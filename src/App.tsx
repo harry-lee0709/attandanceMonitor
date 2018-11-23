@@ -17,7 +17,8 @@ interface IState {
   longitude: any,
   savedLatitude: any,
   savedLongitude: any,
-	isShowingAddAttendance: boolean,
+  isShowingAddAttendance: boolean,
+  currentLocationReturned: boolean,
 }
 
 class App extends Component<{}, IState> {
@@ -35,7 +36,8 @@ class App extends Component<{}, IState> {
       longitude: "",
       savedLatitude: "",
       savedLongitude: "",
-			isShowingAddAttendance: false,
+      isShowingAddAttendance: false,
+      currentLocationReturned: false,
     }
 
 		this.fetchAttendance("")
@@ -54,10 +56,10 @@ class App extends Component<{}, IState> {
         <div className="table-wrapper">
           <div className="table-title">
             <div className="row">
-              <div className="col-sm-7">
+              <div className="col-sm-5">
                 <img id="logo" src={Logo} height="80"/><h2>Attendance Monitor - <b>MSA 2018</b></h2>
               </div>
-              <div className="col-sm-5">
+              <div className="col-sm-7">
 								{isShowingAddAttendance &&
                 <div className="btn btn-primary btn-action btn-add" id="addAttendanceButton" onClick={this.onOpenModal}><span>Add Attendance</span></div> }
                 <div className="btn btn-primary btn-action btn-add" onClick={this.onAuthenticationModal}><span>Authenticate</span></div>
@@ -164,10 +166,13 @@ class App extends Component<{}, IState> {
     navigator.geolocation.getCurrentPosition((position) => {
       this.setState({
         savedLatitude: position.coords.latitude,
-        savedLongitude: position.coords.longitude
+        savedLongitude: position.coords.longitude,
+        currentLocationReturned: true
       })
     })
-    if (this.state.savedLatitude != "" && this.state.savedLongitude != "")
+    let x = await this.state.currentLocationReturned
+     // NEED TO FIX THIS
+    if (x) 
       alert(`Location has set to ${this.state.savedLatitude} ${this.state.savedLongitude}.`)
     else alert("Unable to set the current location.")
   }
@@ -179,18 +184,25 @@ class App extends Component<{}, IState> {
         longitude: position.coords.longitude
       })
     })
-    if (this.state.savedLatitude+1 >= this.state.latitude && this.state.latitude <= this.state.savedLatitude-1 &&
-      this.state.savedLongitude+1 >= this.state.longitude && this.state.longitude <= this.state.savedLongitude-1) {
+    if (this.arePointsNear()) {
         //set button with id="addAttendanceButton" visible which is hidden by default.
 				this.setState({isShowingAddAttendance: true});
       }
     console.log(`saved lat ${this.state.savedLatitude}, saved long ${this.state.savedLongitude}, current lat ${this.state.latitude}, current long ${this.state.longitude}`)
   }
 
+  private arePointsNear() {
+    let ky = 40000 / 360;
+    let kx = Math.cos(Math.PI * this.state.savedLatitude / 180.0) * ky;
+    let dx = Math.abs(this.state.savedLongitude - this.state.longitude) * kx;
+    let dy = Math.abs(this.state.savedLatitude - this.state.latitude) * ky;
+    return Math.sqrt(dx * dx + dy * dy) <= 5;
+  }
+
     //exports table data as csv file
   private exportToExcel() {
     const data = this.state.attendanceList
-    var date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+    let date = new Date().toJSON().slice(0,10).replace(/-/g,'/');
     const fileName = "attendanceMonitor" + date;
     const exportType = 'csv'
     exportFromJSON({ data, fileName, exportType })

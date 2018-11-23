@@ -50,12 +50,12 @@ class ServiceDetail extends Component<IProps, IState, {}> {
                       <td className="attendanceData" id="phone-field">{attendanceDetail.phone}</td>
                       <td className="attendanceData" id="timeArrived-field">{attendanceDetail.timeArrived}</td>
                       <td className="attendanceData" id="note-field">{attendanceDetail.note}</td>
-                      {(authenticated) ?
+                      {(authenticated) &&
                         <div>
                         <button className="btn btn-primary btn-warning btn-edit" onClick={this.onOpenModal}>Edit</button>
                         <button className="btn btn-primary btn-danger btn-delete" onClick={this.deleteAttendance.bind(this, attendanceDetail.id)}>Delete</button>
                         </div>
-                       : ""}
+                       }
                     </tr>
                   </tbody>
                 )
